@@ -1,0 +1,177 @@
+package edu.miracosta.cs113;
+import java.io.*;
+import java.util.*;
+/**
+ * BinaryTree.java: 
+ * 			This class is a basic Binary Tree class
+ * 
+ * @author Michael McDermott <mmcdermott011@gmail.com>
+ * @version 1.0
+ */
+public class BinaryTree<E> implements Serializable {
+	
+	/** The root of the binary tree */
+	protected Node<E> root;
+
+	//Constructors
+	/** Constructs a BinaryTree with a null root
+	 */
+	public BinaryTree() {
+		this.root = null;
+	}
+	
+	/** Constructs a BinaryTree with a root
+	 * @param root 	the node designated to be the trees root
+	 */
+	protected BinaryTree(Node<E> root) {
+		this.root = root;
+	}
+	
+	/** Constructs a BinaryTree with a root, left and right trees
+	 * @param data the roots data
+	 * @param leftTree
+	 */
+	public BinaryTree(E data, BinaryTree<E> leftTree, BinaryTree<E> rightTree) {
+		root = new Node<E>(data);
+		if (leftTree != null) {
+			root.left = leftTree.root;
+		}
+		else {
+			root.left = null;
+		}
+		if (rightTree != null) {
+			root.right = rightTree.root;
+		}
+		else {
+			root.right = null;
+		}	
+	}
+	
+	/** Gets the BinaryTrees left subtree
+	 * @return a binary tree of the left subtree
+	 */
+	public BinaryTree<E> getLeftSubtree() {
+		if(root.left.data == null) {
+			return new BinaryTree<E>();
+		}
+		else {
+			return new BinaryTree<E>(root.left);
+		}
+	}
+	
+	/** Gets the BinaryTrees right subtree
+	 * @return a binary tree of the right subtree
+	 */
+	public BinaryTree<E> getRightSubtree() {
+		if(root.right.data == null) {
+			return new BinaryTree<E>();
+		}
+		else {
+			return new BinaryTree<E>(root.right);
+		}
+	}
+	
+	/** Gets the trees roots data
+	 * 
+	 * @return root.data	the data stored inside the root node
+	 */
+	public E getData() {
+			return this.root.data;
+	}
+	
+	/** Boolean method that returns true if the root is null or if both children are null
+	 * and returns false if the root is not null and it has a child.
+	 * 
+	 * @return true or false
+	 */
+	public boolean isLeaf() {
+		return root == null || (root.left == null && root.right == null);
+	}
+	
+	/** Creates a string builder and passes it into the preOrderTraverse method and
+	 *  returns the string that the preOrderTraverse method builds with recursion
+	 *  @return sb.toString() the string builders toString() method
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		preOrderTraverse(root, 1, sb);
+		return sb.toString();
+	}
+	
+	/** Recursively traverses the BinaryTree in preorder until it reaches null nodes
+	 * 	and will append a string of the tree
+	 *  @param node		the starting point for each traversal
+	 *  @param depth	integer so it knows how deep it is and how many indents to append 
+	 *  @param sb		the StringBuilder object that is passed in each recursive call to build one string. 
+	 *  @return void
+	 */
+	private void preOrderTraverse(Node<E> node, int depth, StringBuilder sb) {
+		//Does not indent for the first line
+		for (int i = 1; i < depth; i ++) {
+			sb.append( " ");
+		}
+		//Base Case
+		if (node == null) {
+			sb.append("null\n");
+		}
+		//Recursive Case
+		else {
+			preOrderTraverse(node.left, depth+1, sb);
+			for (int i = 1; i < depth; i ++) {
+				sb.append( " ");
+			}
+			sb.append(node.toString() + "\n");
+			for (int i = 1; i < depth; i ++) {
+				sb.append( " ");
+			}
+			preOrderTraverse(node.right, depth+1, sb);
+			
+		}
+	}
+	
+	/** Recursively reads a scanner object and creates and combines left and right
+	 *  subtrees to combine into one BinaryTree which is returned.
+	 *  @param scan		scanner object that 
+	 *  @return a binary tree made from the object scanned
+	 */
+	public static BinaryTree<String> readBinaryTree(Scanner scan) {
+		String data = scan.next();
+		if (data.equals("null")) {
+			return null;
+		}
+		else {
+			BinaryTree<String> leftTree = readBinaryTree(scan);
+			BinaryTree<String> rightTree = readBinaryTree(scan);
+			return new BinaryTree<String> (data, leftTree, rightTree);
+		}
+	}
+		
+	/** Class to encapsulate a tree node. */
+public static class Node<E> {
+		// Data fields
+		/** The data stored in the node. */
+		protected E data;
+		/** Reference to the left child. */
+		protected Node<E> left;
+		/** Reference to the right child. */
+		protected Node<E> right;
+		
+		//Constructors
+		/** Constructs a node with given data and no children
+		 * @param data	The data to store in the node
+		 */
+		public Node(E data) {
+			this.data = data;
+			left = null;
+			right = null;
+		}
+		
+		/** Returns a string of the nodes data
+		 * @return the datas toString method
+		 */
+		public String toString() {
+			return data.toString();
+		}
+	} // End of Node<E> class
+	
+} //End of BinaryTree <E> class
